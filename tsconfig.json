@@ -12,6 +12,20 @@
     "**/*.ts",
     "**/*.tsx",
     ".expo/types/**/*.ts",
-    "expo-env.d.ts"
+    "expo-env.d.ts",
+    "nativewind-env.d.ts",
+    "app/puntuacion.jsx",
+    "app/(tabs)/profile.jsx",
+    "app/(tabs)/index.jsx",
+    "app/(tabs)/games.jsx",
+    "app/bibleQuiz.jsx",
+    "app/(tabs)/_layout.jsx",
+    "app/(auth)/signUp.jsx",
+    "app/(auth)/login.jsx",
+    "app/(auth)/_layout.jsx",
+    "app/(tabs)/index.jsx",
+    "app/+not-found.jsx",
+    "app/_layout.jsx",
+    "navigation.jsx"
   ]
 }
