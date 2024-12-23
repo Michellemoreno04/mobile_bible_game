@@ -1,10 +1,12 @@
 import React, { useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity,ImageBackground } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../components/firebase/firebaseConfig';
 import useAuth from './authContext';
+
+
 export default function SignUpScreen() {
 
   const { user } = useAuth();
@@ -36,9 +38,10 @@ export default function SignUpScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Bienvenido a "Estudio Bíblico Diario"</Text>
-      <Text style={styles.description}>
+    <ImageBackground source={require('../assets/images/bg-login.jpg')} className='w-full h-full flex items-center justify-center' >
+    <View className='w-full h-full   flex items-center justify-center p-10 absolute top-0 left-0 right-0 bottom-0 bg-black/60'>
+      <Text className="text-center text-3xl font-bold text-white">Bienvenido a "Estudio Bíblico Diario"</Text>
+      <Text className="text-center text-lg pb-5  text-gray-100">
         Nuestra app está diseñada para ayudarte a estudiar la Biblia todos los días y fortalecer tu relación espiritual.
       </Text>
 
@@ -57,6 +60,7 @@ export default function SignUpScreen() {
         <Text style={styles.buttonText}>Registrarse con Google</Text>
       </TouchableOpacity>
     </View>
+    </ImageBackground>
   );
 }
 

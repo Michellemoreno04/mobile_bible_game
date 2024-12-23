@@ -45,11 +45,14 @@ export default function RootLayout() {
        
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="index" options={{ headerShown: false }} />
+        <Stack.Screen name="login" options={{ headerShown: true, headerTransparent: true,headerTitle: '',headerTintColor: '#fff'}} />
+        <Stack.Screen name="signUp" options={{ headerShown: true, headerTransparent: true,headerTitle: '',headerTintColor: '#fff'}} />
         <Stack.Screen name="bibleQuiz" options={{ headerShown: false }} />
+        <Stack.Screen name="versiculosFavoritos" options={{ headerShown: false }} />
         <Stack.Screen
         name="puntuacion"
         options={{
-          presentation: "modal",
+          presentation: "card", 
          
         }}
       />

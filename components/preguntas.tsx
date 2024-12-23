@@ -1,6 +1,9 @@
+import { addDoc, collection } from "firebase/firestore";
+import { db } from "./firebase/firebaseConfig";
+
 export const ArrayPreguntas = [ 
   {
-    id: 1,
+    
     pregunta: '¿Quién creó el cielo y la tierra?',
     respuestas: ['Moisés', 'Dios', 'Abraham', 'Adán'],
     correcta: 'Dios',
@@ -75,8 +78,9 @@ export const ArrayPreguntas = [
     id: 10,
     pregunta: '¿Qué cayó del cielo para alimentar a los israelitas en el desierto?',
     respuestas: ['Codornices', 'Maná', 'Panes', 'Higos'],
-    correcta: 'Maná',
+    correcta: 'Panes',
     referencia: 'Éxodo 16:4',
     textoBiblico: 'Y Jehová dijo a Moisés: He aquí, yo os haré llover pan del cielo; y el pueblo saldrá y recogerá diariamente la porción de un día, para que yo lo pruebe si anda en mi ley o no.',
   },
 ];
+

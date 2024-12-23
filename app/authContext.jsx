@@ -25,7 +25,8 @@ export const AuthProvider = ({ children }) => {
 
      const signOut = async () => {
          await auth.signOut();
-         navigation.navigate("index");
+         console.log('User signed out');
+         navigation.navigate("index"); // pending no funciona
         
     };
 
