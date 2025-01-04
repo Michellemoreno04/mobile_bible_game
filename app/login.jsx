@@ -1,24 +1,25 @@
 import React, { useState } from 'react'
-import { Text, View, TextInput, Pressable, Alert,ImageBackground } from 'react-native'
-import AntDesign from '@expo/vector-icons/AntDesign';
+import { Text, View, Pressable, Alert, TextInput } from 'react-native'
 import { useNavigation } from '@react-navigation/native';
 import { Link } from 'expo-router';
 import { auth } from '../components/firebase/firebaseConfig';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { GoogleAuthProvider,signInWithPopup } from "firebase/auth";
 import { useRouter } from "expo-router";
-import { db } from '../components/firebase/firebaseConfig';
+
 
 function Login() {
   const router = useRouter();
-  const provider = new GoogleAuthProvider();
+ 
 const navigation = useNavigation();
+
+
 
 const [loginCredentials, setLoginCredentials] = useState({
    email: '',
    password: ''
    });
 
+   // 
   const handlerOnchange = (field, value) => {
       setLoginCredentials((prevLoginCredentials) => ({
         ...prevLoginCredentials,
@@ -37,6 +38,7 @@ const [loginCredentials, setLoginCredentials] = useState({
           const errorCode = error.code;
           const errorMessage = error.message;
           console.log('Login error:', errorCode, errorMessage);
+          handleFirebaseError(error);
         });
 
       setLoginCredentials({
@@ -46,24 +48,36 @@ const [loginCredentials, setLoginCredentials] = useState({
 
     }
 
-    // Función para manejar el inicio de sesión con Google(solopara la web no para las app)
-  const handleGoogleLogin = () => {
-      signInWithPopup(auth, provider)
-        .then((result) => {
-          const user = result.user;
-          console.log('User logged in:', user);
-        })
-        .catch((error) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
-          console.log('Login error:', errorCode, errorMessage);
-        });
-      }
+// Función para manejar los errores de Firebase
+const handleFirebaseError = (error) => {
+  let errorMessage = "Ocurrió un error. Por favor, inténtalo de nuevo.";
+
+  switch (error.code) {
+    case "auth/invalid-email":
+      errorMessage = "El correo electrónico no es válido. Verifica el formato.";
+      break;
+    case "auth/user-not-found":
+      errorMessage = "No se encontró una cuenta con este correo. Regístrate primero.";
+      break;
+    case "auth/wrong-password":
+      errorMessage = "La contraseña es incorrecta. Inténtalo de nuevo.";
+      break;
+    case "auth/invalid-credential":
+      errorMessage = "Las credenciales ingresadas no son válidas. Intenta nuevamente.";
+      break;
+    default:
+      errorMessage = "Ha ocurrido un error inesperado. Por favor, inténtalo de nuevo más tarde.";
+  }
+
+  // Muestra el mensaje de error con una alerta
+  Alert.alert("Error de inicio de sesión", errorMessage, [{ text: "Entendido" }]);
+};
+
+    
+
+ 
       return (
-        <ImageBackground
-          source={require('../assets/images/bg-login.jpg')}
-          className="w-full h-full flex items-center justify-center"
-        >
+        
           
           <View className="w-full h-full flex items-center justify-center p-10 absolute top-0 left-0 right-0 bottom-0 bg-black/60">
             <View className="w-full h-full flex items-center justify-center gap-5">
@@ -106,13 +120,7 @@ const [loginCredentials, setLoginCredentials] = useState({
               <View className="w-full flex flex-col items-center justify-center gap-2">
                 <Text className="text-white">- o inicia sesión con -</Text>
       
-                <Pressable
-                  className="w-full h-14 flex flex-row items-center border border-gray-300 rounded-md p-2 justify-center gap-2"
-                  onPress={handleGoogleLogin}
-                >
-                  <AntDesign name="google" size={24} color="black" />
-                  <Text className="text-white">Cuenta de Google</Text>
-                </Pressable>
+                
       
                 {/* Link de Registro */}
                 <View className="w-full flex flex-row items-center justify-center gap-2">
@@ -124,7 +132,7 @@ const [loginCredentials, setLoginCredentials] = useState({
               </View>
             </View>
           </View>
-        </ImageBackground>
+        
       );
 }
 

@@ -22,6 +22,7 @@ const SignUp = () => {
   const [vidas, setVidas] = useState(3);
   const [monedas, setMonedas] = useState(200);
   const [exp, setExp] = useState(0);
+  const [nivel,setNivel] = useState(1);
   
 
  const handlerOnChange = (field, value) => {
@@ -42,9 +43,11 @@ createUserWithEmailAndPassword(auth, credenciales.email, credenciales.password)
         Timestamp: Timestamp.now(),
         vidas: vidas,
         monedas: monedas,
-        exp: exp
+        exp: exp,
+        nivel: nivel
       });
     } catch (error) {
+  
       console.log(error);
       return error
     }
@@ -65,6 +68,7 @@ createUserWithEmailAndPassword(auth, credenciales.email, credenciales.password)
   .catch((error) => {
     const errorCode = error.code;
     const errorMessage = error.message;
+    handleFirebaseError(error);
     // ..
   });
 
@@ -73,15 +77,39 @@ createUserWithEmailAndPassword(auth, credenciales.email, credenciales.password)
   }
 };
 
+// Función para manejar los errores de Firebase
+const handleFirebaseError = (error) => {
+  let errorMessage = "Ocurrió un error. Por favor, inténtalo de nuevo.";
+
+  switch (error.code) {
+    case "auth/invalid-email":
+      errorMessage = "El correo electrónico no es válido. Verifica el formato.";
+      break;
+    case "auth/user-not-found":
+      errorMessage = "No se encontró una cuenta con este correo. Regístrate primero.";
+      break;
+    case "auth/wrong-password":
+      errorMessage = "La contraseña es incorrecta. Inténtalo de nuevo.";
+      break;
+    case "auth/invalid-credential":
+      errorMessage = "Las credenciales ingresadas no son válidas. Intenta nuevamente.";
+      break;
+    default:
+      errorMessage = "Ha ocurrido un error inesperado. Por favor, inténtalo de nuevo más tarde.";
+  }
+
+  // Muestra el mensaje de error con una alerta
+  Alert.alert("Error de inicio de sesión", errorMessage, [{ text: "Entendido" }]);
+};
+
   return (
-    <ImageBackground source={require('../assets/images/bg-login.jpg')} className='w-full h-full flex items-center justify-center'>
     <View className="w-full h-full flex items-center justify-center p-10 absolute top-0 left-0 right-0 bottom-0 bg-black/60 gap-4" >
       <View>
         <Text className='text-3xl font-bold color-white '>Bible Game</Text>
         <Text className='text-lg font-bold color-white'>Registrate para continuar</Text>
       </View>
       <TextInput
-        className='w-full h-14 border border-gray-300 rounded-md p-2'
+        className='w-full h-14 border border-gray-300 rounded-md p-2 text-white'
         placeholder="Nombre"
         placeholderTextColor="#ccc"
         value={credenciales.name}
@@ -89,7 +117,7 @@ createUserWithEmailAndPassword(auth, credenciales.email, credenciales.password)
         keyboardType="default"
       />
       <TextInput
-        className='w-full h-14 border border-gray-300 rounded-md p-2'
+        className='w-full h-14 border border-gray-300 rounded-md p-2 text-white'
         placeholder="correo electronico"
         placeholderTextColor="#ccc"
         value={credenciales.email}
@@ -97,7 +125,7 @@ createUserWithEmailAndPassword(auth, credenciales.email, credenciales.password)
         keyboardType="email-address"
       />
       <TextInput
-        className='w-full h-14 border border-gray-300 rounded-md p-2'
+        className='w-full h-14 border border-gray-300 rounded-md p-2 text-white'
         placeholder="contraseña"
         placeholderTextColor="#ccc"
         value={credenciales.password}
@@ -105,7 +133,7 @@ createUserWithEmailAndPassword(auth, credenciales.email, credenciales.password)
         secureTextEntry
       />
       <TextInput
-      className='w-full h-14 border border-gray-300 rounded-md p-2'
+      className='w-full h-14 border border-gray-300 rounded-md p-2 text-white'
         placeholder="Confirmar contraseña"
         placeholderTextColor={'#ccc'}
         value={credenciales.confirmPassword}
@@ -120,7 +148,7 @@ createUserWithEmailAndPassword(auth, credenciales.email, credenciales.password)
       </Pressable>
 
       <Pressable className='w-full h-14 flex flex-row items-center border border-gray-300 rounded-md p-2 justify-center gap-2'>
-                <AntDesign name="google" size={24} color="black" />
+                <AntDesign name="google" size={24} color="#fff" />
               <Text className='color-white'>Cuenta de Google</Text>
             </Pressable>
 
@@ -134,7 +162,7 @@ createUserWithEmailAndPassword(auth, credenciales.email, credenciales.password)
       </Text>
            
     </View>
-    </ImageBackground>
+    
   );
 };
 

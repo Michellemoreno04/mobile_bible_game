@@ -11,6 +11,7 @@ import { useEffect } from "react";
 import "react-native-reanimated";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { AuthProvider } from "./authContext";
+import { PaperProvider } from 'react-native-paper';
 
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -33,8 +34,23 @@ export default function RootLayout() {
   if (!loaded) {
     return null;
   }
+  // difine el tema de la aplicacion para el react-native-paper
+  const theme = {
+    ...DefaultTheme,
+    colors: {
+      ...DefaultTheme.colors,
+      primary: 'blue',
+      secondary: 'yellow',
+    },
+    titleLarge: {
+      fontFamily: 'Roboto-Medium',
+      fontWeight: '500',
+      fontSize: 20,
+    },
+  };
 
   return (
+    <PaperProvider theme={theme}>
     <AuthProvider>
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <Stack
@@ -48,18 +64,19 @@ export default function RootLayout() {
         <Stack.Screen name="login" options={{ headerShown: true, headerTransparent: true,headerTitle: '',headerTintColor: '#fff'}} />
         <Stack.Screen name="signUp" options={{ headerShown: true, headerTransparent: true,headerTitle: '',headerTintColor: '#fff'}} />
         <Stack.Screen name="bibleQuiz" options={{ headerShown: false }} />
-        <Stack.Screen name="versiculosFavoritos" options={{ headerShown: false }} />
-        <Stack.Screen
+        <Stack.Screen name="versiculosFavoritos" options={{ headerShown: true, headerTitle: 'Versículos Favoritos',headerBackTitle:'volver' }} />
+        {/*<Stack.Screen
         name="puntuacion"
         options={{
           presentation: "card", 
          
         }}
-      />
+      />*/}
         <Stack.Screen name="+not-found" />
       </Stack>
       <StatusBar style="auto" />
     </ThemeProvider>
     </AuthProvider>
+    </PaperProvider>
   );
 }

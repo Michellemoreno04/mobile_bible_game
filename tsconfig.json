@@ -14,7 +14,7 @@
     ".expo/types/**/*.ts",
     "expo-env.d.ts",
     "nativewind-env.d.ts",
-    "app/puntuacion.jsx",
+    "app/(tabs)/puntuacion.jsx",
     "app/(tabs)/profile.jsx",
     "app/(tabs)/index.jsx",
     "app/(tabs)/games.jsx",

@@ -11,13 +11,19 @@ export const AuthProvider = ({ children }) => {
     const navigation = useNavigation();
 
     useEffect(() => {
-        const unsubscribe = auth.onAuthStateChanged((currentUser) => {
-            setUser(currentUser);
+        const unsubscribe = auth.onAuthStateChanged((user) => {
+            setUser(user);
             setLoading(false);
-        });
+            if (user) {
+                console.log('User signed in:', user.email);
+            } else {
+                console.log('User signed out');
+                navigation.navigate("index");
+            }
+        })
 
         return () => unsubscribe(); // Limpieza del listener
-    }, []);
+    }, [user]);
 
     const signIn = async (email, password) => {
         await auth.signInWithEmailAndPassword(email, password);
@@ -26,7 +32,8 @@ export const AuthProvider = ({ children }) => {
      const signOut = async () => {
          await auth.signOut();
          console.log('User signed out');
-         navigation.navigate("index"); // pending no funciona
+         
+         navigation.navigate("login"); 
         
     };
 

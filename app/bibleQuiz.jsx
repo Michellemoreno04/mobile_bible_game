@@ -1,33 +1,38 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Alert, Pressable } from 'react-native';
-import { AntDesign, FontAwesome5, Octicons } from '@expo/vector-icons';
+import { View, Text, TouchableOpacity, StyleSheet, Alert,Modal} from 'react-native';
+import { AntDesign, FontAwesome5, MaterialCommunityIcons,} from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { Link } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { doc, updateDoc, onSnapshot, getDocs, collection,limit, query, where,addDoc, documentId } from 'firebase/firestore';
 import useAuth from './authContext';
 import { db } from '../components/firebase/firebaseConfig';
-
-
-
+import { ModalPuntuacion } from '@/components/Modales/modalPuntuacion';
+import { ModalRacha } from '@/components/Modales/modalRacha';
+import {manejarRachaDiaria} from '@/components/Racha/manejaRacha';
 const BibleQuiz = () => {
 const navigation = useNavigation();
 
-  
   const [questions, setQuestions] = useState([]);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [respuestaSeleccionada, setRespuestaSeleccionada] = useState(null);
   const [userInfo, setUserInfo] = useState({});
-  
+  const [mostrarRespuestaCorrecta, setMostrarRespuestaCorrecta] = useState(false);
+  const [showModal, setShowModal] = useState(false);// Estado para mostrar el modal de puntuacion
+  const [showModalRacha, setShowModalRacha] = useState(false);// Estado para mostrar el modal de racha
+  const [resultadoRespuestas, setResultadoRespuestas] = useState(0);
+  const [monedasGanadas, setMonedasGanadas] = useState(0);
+  const [expGanada, setExpGanada] = useState(0);
   
 
   const { user } = useAuth();
+
 
        // Obtén las preguntas de Firestore
   const fetchQuestions = async () => {
     try {
       const userDocRef = doc(db, 'users', user.uid);
-      const preguntasRespondidasSnapshot = await getDocs(collection(userDocRef, 'preguntasRespondidas'));
+      const preguntasRespondidasSnapshot = await getDocs(collection(userDocRef, 'Preguntas Respondidas'));
       const respuestasRespondidas = preguntasRespondidasSnapshot.docs.map(doc => doc.data().questionId); // Obtén los IDs de las preguntas respondidas
   
       // Filtra las preguntas no respondidas
@@ -36,7 +41,7 @@ const navigation = useNavigation();
         q = query(
           collection(db, 'preguntas'),
           where(documentId(), 'not-in', respuestasRespondidas), // Filtrar por IDs de documento
-          limit(3) // Limitar a 3 preguntas
+          limit(2) // Limitar a 3 preguntas
         );
       } else {
         q = query(collection(db, 'preguntas'), limit(3));
@@ -52,6 +57,7 @@ const navigation = useNavigation();
       setQuestions(preguntas);
     } catch (error) {
       console.error('Error al obtener las preguntas:', error);
+      Alert.alert('Error', 'No se pudieron obtener mas preguntas.');
     }
   };
 
@@ -92,7 +98,7 @@ const navigation = useNavigation();
     }
   
     const userDocRef = doc(db, 'users', user.uid);
-    const preguntasRespondidasRef = collection(userDocRef, 'preguntasRespondidas');
+    const preguntasRespondidasRef = collection(userDocRef, 'Preguntas Respondidas');
   
     try {
       const docRef = await addDoc(preguntasRespondidasRef, {
@@ -106,71 +112,76 @@ const navigation = useNavigation();
   };
   
   
-
+// Función para comprobar la respuesta seleccionada
   const comprobarRespuesta = async () => {
     if (respuestaSeleccionada === null) {
       Alert.alert('Por favor, selecciona una respuesta.');
       return;
     }
-
-
-    if (respuestaSeleccionada === correcta ) {
-      Alert.alert('¡Respuesta correcta!');
-
-      // Marcar la pregunta como respondida en Firestore
-     await marcarPreguntaRespondida(questions[currentQuestion]?.questionId); // Asegúrate de que `questionId` esté disponible
   
-     
+    if (respuestaSeleccionada === correcta) {
+      setExpGanada((prevExp) => prevExp + 15);
+      setMonedasGanadas((prevMonedas) => prevMonedas + 10);
+
+      setResultadoRespuestas(resultadoRespuestas + 1); // Incrementar el contador de respuestas correctas
+      await marcarPreguntaRespondida(questions[currentQuestion]?.questionId);
+  
       if (currentQuestion < questions.length - 1) {
         const userDocRef = doc(db, 'users', user.uid);
         await updateDoc(userDocRef, {
           exp: userInfo.exp + 15,
         });
-        
+  
         setCurrentQuestion(currentQuestion + 1);
         setRespuestaSeleccionada(null);
       } else {
-        navigation.navigate('puntuacion');
-      }
-     
-    } else {
-      // Actualizar las vidas en Firestore si la respuesta es incorrecta
-      const userDocRef = doc(db, 'users', user.uid);
-
-      if (userInfo.vidas > 0) {
-        try {
-          await updateDoc(userDocRef, {
-            vidas: userInfo.vidas - 1,
-          })
-          setUserInfo((prevUserInfo) => ({
-            ...prevUserInfo,
-            vidas: prevUserInfo.vidas,
-          }));
-  
-          
-          if (currentQuestion < questions.length - 1) {
-            Alert.alert('¡Respuesta incorrecta!');
-         
-            setCurrentQuestion(currentQuestion + 1);
-            setRespuestaSeleccionada(null);
-          } else {
-            navigation.navigate('puntuacion');
-          }
-         
-        } catch (error) {
-          console.error('Error al actualizar las vidas:', error);
-          Alert.alert('Error', 'No se pudieron actualizar las vidas.');
-        }
-      } else {
-        Alert.alert('No tienes más vidas. El juego ha terminado.');
+           
+        setShowModal(true); // Muestra el modal de puntuación
         
-
-        navigation.navigate('puntuacion');
+        
       }
-    }
-  }; 
-  
+    } else {
+     // Alert.alert('¡Respuesta incorrecta!');
 
+      setMostrarRespuestaCorrecta(true);
+  
+      setTimeout(async () => {
+        const userDocRef = doc(db, 'users', user.uid);
+  
+        if (userInfo.vidas > 0) {
+          try {
+            await updateDoc(userDocRef, {
+              vidas: userInfo.vidas - 1,
+            });
+            setUserInfo((prevUserInfo) => ({
+              ...prevUserInfo,
+              vidas: prevUserInfo.vidas,
+            }));
+  
+            if (currentQuestion < questions.length - 1) {
+              setMostrarRespuestaCorrecta(false); // Ocultar el borde al cambiar de pregunta
+              setCurrentQuestion(currentQuestion + 1);
+              setRespuestaSeleccionada(null);
+            } else {
+              
+             // setShowModal(true); // Muestra el modal de puntuación
+              
+                
+             } 
+          } catch (error) {
+            console.error('Error al actualizar las vidas:', error);
+            Alert.alert('Error', 'No se pudieron actualizar las vidas.');
+          }
+        } else {
+          Alert.alert('No tienes más vidas. El juego ha terminado.');
+         // manejarRachaDiaria(user.uid,setShowModalRacha);
+          setShowModal(true); // Muestra el modal
+        }
+      }, 2000); // Esperar 2 segundos antes de avanzar
+    }
+  };
+  
+  // Función para saltar una pregunta
   const skip = async () => {
 
     if (userInfo.monedas < 50) {
@@ -192,7 +203,8 @@ const navigation = useNavigation();
       }
     } else {
       Alert.alert('Has completado el quiz.');
-      navigation.navigate('puntuacion');
+      manejarRachaDiaria(user.uid);
+      setShowModal(true); // Muestra el modal
     }
   };
 
@@ -233,18 +245,31 @@ const navigation = useNavigation();
     }
   };
 
-
   const showTextoBiblico = () => {
     Alert.alert(referencia, textoBiblico, [{ text: 'Cerrar' }]);
   };
 
+  // Función para mostrar el modal de racha diaria 
+ const mostrarModalRacha = () => { 
+  
+    setShowModal(false);
+   
+    setTimeout(() => { // Esperar 1 segundo antes de mostrar el otro modal de racha
+      manejarRachaDiaria(user.uid,setShowModalRacha);
+      navigation.navigate('(tabs)')
+    }, 1000)
+}
+
   return (
     <SafeAreaView>
+ <ModalPuntuacion expGanada={expGanada} monedasGanadas={monedasGanadas} respuestasCorrectas={resultadoRespuestas} isVisible={showModal} onClose={mostrarModalRacha}/>  
+<ModalRacha userInfo={userInfo} isVisible={showModalRacha} setShowModal={setShowModal} setShowModalRacha={setShowModalRacha}  />
+
     <View  className='w-full h-full bg-gray-300 flex items-center p-5'>
       <View className='w-full flex flex-row justify-between items-center '>
         <Link href="(tabs)" asChild>
-        <TouchableOpacity className='p-2'  >
-        <Octicons name="home" size={30} color="black" />
+        <TouchableOpacity >
+        <MaterialCommunityIcons name="home" color="blue" size={40}/>
         </TouchableOpacity>
         </Link>
         <View style={styles.statusBar}>
@@ -264,21 +289,32 @@ const navigation = useNavigation();
       </View>
 
       <View className='w-full flex flex-col items-center'>
-        { respuestas.map ((respuestas, index) => (
-          <TouchableOpacity
-          key={index}
-          className={`w-full h-16   rounded-md flex items-center justify-center m-1 ${
-            respuestaSeleccionada === respuestas ? 'border-2 border-blue-500' : 'border-2 border-gray-300'
-          }`}
-          onPress={() => setRespuestaSeleccionada(respuestas)}
-        >
-          <Text className='text-2xl'>{respuestas}</Text>
-        </TouchableOpacity>
-        ))}
+      {respuestas.map((respuesta, index) => (
+  <TouchableOpacity
+    key={index}
+    className={`w-full h-16 rounded-md flex items-center justify-center m-1 ${
+      respuestaSeleccionada === respuesta
+        ? 'border-2 border-green-500'
+        : mostrarRespuestaCorrecta && respuesta === correcta
+        ? 'border-2 border-green-500'
+        : 'border-2 border-gray-300'
+    } ${
+      mostrarRespuestaCorrecta && respuesta !== correcta
+        ? 'border-2 border-red-500'
+        : ''
+    
+
+    }`}
+    onPress={() => setRespuestaSeleccionada(respuesta)}
+    disabled={mostrarRespuestaCorrecta} // Evitar que el usuario cambie la respuesta mientras se muestra la correcta
+  >
+    <Text className='text-2xl'>{respuesta}</Text>
+  </TouchableOpacity>
+))}
       </View>
 
       <TouchableOpacity
-       className='w-52 h-14 border-2 border-gray-500 bg-blue-500 rounded-md flex items-center justify-center flex-row gap-2 m-5'
+       className='w-56 h-16 border-2 border-gray-500 bg-blue-500 rounded-md flex items-center justify-center flex-row gap-2 m-5'
        onPress={comprobarRespuesta}
        >
         
@@ -289,12 +325,12 @@ const navigation = useNavigation();
       <View className='w-full flex flex-row justify-around'>
         <TouchableOpacity
         onPress={skip}
-        className='w-48 h-20 border-2 border-gray-500 bg-red-500 rounded-md flex items-center justify-center ' >
+        className='w-48 h-20  bg-red-500 rounded-md flex items-center justify-center ' >
           <Text className='color-white'>💰{'50'}</Text>
           <Text className='color-white font-bold'>Saltar</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          className='w-48 h-20 border-2 border-gray-500 bg-blue-500 rounded-md flex items-center justify-center'
+          className='w-48 h-20  bg-blue-500 rounded-md flex items-center justify-center'
          onPress={removeTwo}
         >
           <Text className='color-white'>💰{'50'}</Text>
@@ -311,16 +347,17 @@ const styles = StyleSheet.create({
 
  questionContainer: {
     
-    borderRadius: 20,
+    borderRadius: 10,
   },
  
   
   statusBar: {
     flexDirection: 'row',
+    alignItems: 'center',
   },
   status: {
     marginHorizontal: 10,
-    fontSize: 16,
+    fontSize: 18,
   },
   
   
