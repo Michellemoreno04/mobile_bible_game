@@ -8,10 +8,24 @@ import { useNavigation } from '@react-navigation/native';
 import { db } from '../../components/firebase/firebaseConfig';
 import { doc, onSnapshot } from 'firebase/firestore';
 import useAuth from '@/app/authContext';
-export function ModalRacha({ isVisible,setShowModal,setShowModalRacha }) {
+import { useSound } from '../soundFunctions/soundFunction';
+
+
+export function ModalRacha({ isVisible, setShowModalRacha }) {
 const { user } = useAuth();
+  const  playSound  = useSound();
   const navigation = useNavigation();
   const [userInfo, setUserInfo] = useState({});
+
+useEffect(() => {
+  if (isVisible) {
+    playSound(require('../../assets/sound/rachaSound.mp3'));
+  }
+
+}, [isVisible]);
+
+
+
 
   useEffect(() => {
     const userDocRef = doc(db, 'users', user.uid);
@@ -20,6 +34,8 @@ const { user } = useAuth();
         const userData = doc.data();
         setUserInfo(userData);
       }
+     
+
     });
 
     return () => {
@@ -33,8 +49,9 @@ const { user } = useAuth();
 
    // Función para cerrar el modal
     const closeModal = () => {
-      setShowModal(false);
-      setShowModalRacha(false);
+      
+    setShowModalRacha(false);
+      
       navigation.navigate('(tabs)');
     };
 

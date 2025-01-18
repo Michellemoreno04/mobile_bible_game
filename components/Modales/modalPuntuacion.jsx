@@ -1,14 +1,21 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Text,StyleSheet } from 'react-native';
 import Modal from 'react-native-modal';
 import LottieView from 'lottie-react-native';
 import { FontAwesome5, FontAwesome6 } from '@expo/vector-icons';
 import { ProgressBar } from 'react-native-paper';
 import { Pressable } from 'react-native';
-
+import { useSound } from '../soundFunctions/soundFunction';
 
 // Modal para mostrar la puntuación obtenida en la trivia
 export function ModalPuntuacion({isVisible,onClose,respuestasCorrectas,expGanada,monedasGanadas}) {
+const playSound = useSound();
+
+useEffect(() => {
+   if (isVisible) {
+       playSound(require('../../assets/sound/goodresult.mp3')); 
+   }
+}, [isVisible]);
 
 
     return (
@@ -20,7 +27,7 @@ export function ModalPuntuacion({isVisible,onClose,respuestasCorrectas,expGanada
        <Text className='text-3xl font-bold' >Platinium</Text>
        <Text >Sigues mateniendo tus 15 dias de racha</Text>
 
-          <View className='w-52 h-52 flex items-center justify-center rounded-full bg-yellow-300 m-5' >
+          <View className='w-52 h-52 flex items-center justify-center rounded-full m-5' >
            <LottieView source={require('../../assets/lottieFiles/award.json')}  autoPlay  
            style={{width: 300, height: 300}}
            />             

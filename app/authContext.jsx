@@ -18,7 +18,7 @@ export const AuthProvider = ({ children }) => {
                 console.log('User signed in:', user.email);
             } else {
                 console.log('User signed out');
-                navigation.navigate("index");
+                navigation.navigate("login");
             }
         })
 

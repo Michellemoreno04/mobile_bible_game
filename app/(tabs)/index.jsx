@@ -1,195 +1,128 @@
-import {Text, View, Pressable,StyleSheet, Alert,Animated,ScrollView } from 'react-native';
+import { Text, View, StyleSheet, SafeAreaView, ScrollView, Alert } from 'react-native';
 import '../../global.css';
 import { Link } from 'expo-router';
-import { useNavigation } from '@react-navigation/native';
-import { AntDesign, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import  useAuth  from '../authContext';
+import { AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
+import useAuth from '../authContext';
 import React, { useEffect, useState } from 'react';
-import { doc, onSnapshot } from 'firebase/firestore';
+import { doc, onSnapshot, updateDoc } from 'firebase/firestore';
 import { db } from '@/components/firebase/firebaseConfig';
 import { Avatar } from 'react-native-paper';
-import { collection, addDoc } from 'firebase/firestore';
-import {niveles} from '@/components/Niveles/niveles';
-
-
-export default function HomeScreen() {
-  
-const { user } = useAuth();
-const navigation = useNavigation();
-const [userAuthenticated, setUserAuthenticated] = useState({});
-const [esFavorito, setEsFavorito] = useState(false);
-const [showModalRacha, setShowModalRacha] = useState(false);
-const escala = new Animated.Value(1); // Animación de escala
-
-const versiculoDiario = {
-  referencia: "Juan 3:16",
-  versiculo: "Porque de tal manera amó Dios al mundo, que dio a su Hijo unigénito, para que todo aquel que cree en Él, no se pierda, mas tenga vida eterna.",
-}
+import { niveles } from '@/components/Niveles/niveles';
+import VersiculosDiarios from '@/components/VersiculoDiario/versiculoDiario';
+import NivelModal from '@/components/Modales/modalNivel';
+import { LinearGradient } from 'expo-linear-gradient';
+import { useNavigation } from 'expo-router';
 
 
 
-// aqui vamos a traer la informacion del usuario de la db
-useEffect(() => {
+export default function AppComponent() {
+  const { user } = useAuth();
+  const navigation = useNavigation();
+  const [userAuthenticated, setUserAuthenticated] = useState({});
+  const [showNivelModal, setShowNivelModal] = useState(false);
+  const [nivelAnterior, setNivelAnterior] = useState(null);
 
-  // Solo ejecutar el efecto si `user` está definido
-  if (!user) return;
-  
-  // aqui vamos a traer la informacion del usuario de lA db 
-  const userRef = doc(db, 'users', user?.uid);
-  const unsubscribe = onSnapshot(userRef, (doc) => {
-    setUserAuthenticated(doc.data());
-  });
-  return () => {
-    unsubscribe();
-  };
-  
-},[user])
+  const userId = user?.uid;
 
-// aqui vamos a guardar los versiculos favoritos en una colección de la db
-const guardarVersiculo = async ({ versiculo, referencia, userId}) => {
-  try {
-    if (!userId) {
-      console.error("El usuario no está autenticado.");
-      return;
-    }
+  useEffect(() => {
+    if (!userId) return;
 
-    const userFavoritesRef = collection(db, `users/${userId}/versiculosFavoritos`);
-    await addDoc(userFavoritesRef, {
-      referencia,
-      versiculo,
-      timestamp: new Date()
+    const userRef = doc(db, 'users', userId);
+    const unsubscribe = onSnapshot(userRef, (snapshot) => {
+      const userData = snapshot.data() || {};
+      setUserAuthenticated(userData);
+
+      if (userData.Exp) {
+        const nivelActual = niveles(userData.Exp).nivel;
+        const nivelAnterior = userData.Nivel || 0;
+
+        updateDoc(userRef, { Nivel: nivelActual });
+
+        if (nivelAnterior !== null && nivelActual > nivelAnterior) {
+          Alert.alert(
+            'has subido de nivel',
+            `Has subido del nivel ${nivelAnterior} al ${nivelActual}`,
+            [{ text: 'OK', onPress: () => setShowNivelModal(true) }]
+          );
+        }
+
+        setNivelAnterior(nivelActual);
+      }
     });
 
-   Alert.alert('Versículo guardado exitosamente.');
-  } catch (error) {
-    console.error('Error al guardar el versículo:', error);
-  }
-};
+    return () => unsubscribe();
+  }, [userId]);
 
- // Animación del ícono para guardar versículo
- const animarIcono = () => {
-  Animated.sequence([
-    Animated.timing(escala, { toValue: 1.5, duration: 200, useNativeDriver: true }),
-    Animated.timing(escala, { toValue: 1, duration: 200, useNativeDriver: true }),
-  ]).start();
-};
-
-
-
-return (
-    <SafeAreaView>
-     <ScrollView>
-   <View style={styles.screen}  className='w-full h-screen bg-gray-200 p-5 pt-C '>
-    <View className='w-full  flex justify-start items-center flex-row gap-3 pb-3'>
-       <Avatar.Image size={45} source={require('../../assets/images/icon.png')}
-       className='w-14 h-14 rounded-full'
-       
-       />
-      <View >
-      <Text className='text-2xl font-bold '>{userAuthenticated?.name}</Text>
-        <Text className='flex text-center bg-gray-300 rounded-full p-1'>{niveles(userAuthenticated?.nivel)}</Text>
-      </View>
-      
-    </View>
-    
-  <View style={styles.verseContainer}>
-     <Text className='text-2xl font-bold '>{versiculoDiario.referencia}</Text>
-     <Text className='text-lg font-bold '>
-     {versiculoDiario.versiculo}
-     </Text>
-    <View className='w-full flex flex-row justify-end'>
-    
-    <Pressable onPress={() => {
-      if (!esFavorito) {
-        guardarVersiculo({versiculo: versiculoDiario.versiculo,
-          referencia: versiculoDiario.referencia,
-          userId: user?.uid,});
-      }
-      animarIcono(); // Ejecutar la animación al guardar
-      setEsFavorito(true); // Cambiar a favorito
-    }}>
-      <Animated.View style={{ transform: [{ scale: escala }] }}>
-        <MaterialIcons name="favorite" size={24} color={esFavorito ? 'red' : 'gray'} />
-      </Animated.View>
-    </Pressable>
-
-     
-    </View>
-  </View>
-  
-
-  <View className='w-full  flex justify-start mb-5 mt-3'>
-    <Text className='text-3xl font-bold'>Explora </Text>
-  </View>
-  
-<View className='w-full h-screen flex flex-row justify-center gap-2 '>
- <Link href='/bibleQuiz'>
-  <View style={styles.estudiaContainer} className='w-52 h-52 flex flex-col justify-center items-center bg-white'  >
-    <MaterialCommunityIcons name="book-open-page-variant" size={100} color="black"  />
- 
-   
-   <Text className='text-center font-bold text-2xl ' >
-    Estudia
-    </Text>
-  </View>
-  </Link>
-
-  <Link href='/versiculosFavoritos'>
-  <View style={styles.estudiaContainer} className='w-52 h-52 flex flex-col justify-center items-center bg-white'  >
-  
-   <AntDesign name="heart" size={50} color="red" />
-  
-  
-   <Text className='text-2xl  font-bold mt-2'>Versiculos favoritos</Text>
-
-  
-
-  </View>
-  </Link>
-  </View>
-  </View>
-
-   </ScrollView> 
-   </SafeAreaView>
+  return (
+    <LinearGradient colors={['#ffcc00', '#ff8a00']} style={{ flex: 1 }}>
+      <SafeAreaView>
+        <ScrollView>
+          <NivelModal
+            userInfo={userAuthenticated?.Nivel}
+            isVisible={showNivelModal}
+            onClose={() => setShowNivelModal(false)}
+          />
+          <View style={styles.screen}>
+            <View className="w-full flex justify-start items-center flex-row gap-3 pb-5">
+              <Avatar.Image size={50} source={require('../../assets/images/Loader.png')} />
+              <View>
+                <Text className="text-2xl font-bold">{userAuthenticated?.Name || 'Anonimo'}</Text>
+                <Text className="flex text-center bg-gray-300 rounded-full p-1 text-gray-500">
+                  {`Nivel ${niveles(userAuthenticated?.Exp || 0).nivel} ${niveles(userAuthenticated?.Exp || 0).insignia}`}
+                </Text>
+              </View>
+            </View>
+            <VersiculosDiarios />
+            <View className="w-full flex justify-start mb-5 mt-5">
+              <Text className="text-3xl font-bold text-white">Explora</Text>
+            </View>
+            <View style={styles.estudiaContainer}>
+              <View style={styles.estudia}>
+                <Link href="/bibleQuiz">
+                  <View className="flex justify-center items-center">
+                    <MaterialCommunityIcons name="book-open-page-variant" size={100} color="white" />
+                    <Text className="text-center font-bold text-2xl text-white">Estudia</Text>
+                  </View>
+                </Link>
+              </View>
+              <View style={styles.estudia}>
+                <Link href="/versiculosFavoritos">
+                  <View className="flex justify-center items-center">
+                    <AntDesign name="heart" size={100} color="red" />
+                    <Text className="text-center font-bold text-2xl text-white">Versículos favoritos</Text>
+                  </View>
+                </Link>
+              </View>
+            </View>
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+    </LinearGradient>
   );
 }
 
 
 
-
 const styles = StyleSheet.create({
-
-  verseContainer: {
-    with: '100%',
-    backgroundColor: 'white',
-    borderRadius: 10,
-    padding: 10,
-    marginBottom: 10,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-    paddiing: 10
-  },
-  exploraCointainer: {
-    with: '100%',
-    height: 500,
-    flexDirection: 'row',
-    gap:2,
-    backgroundColor:'white',
-    borderRadius: 10,
-    
-    paddingHorizontal:10,
-    
+  screen: {
+    width: '100%',
+    height: '100%',
+    padding: 20,
   },
   estudiaContainer: {
     borderRadius: 10,
-  }
-   
-  
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 10,
+  },
+  estudia: {
+    width: 185,
+    height: 185,
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#ff8a00',
+    margin: 10,
+  },
 });

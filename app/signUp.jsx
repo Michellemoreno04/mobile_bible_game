@@ -1,11 +1,12 @@
 import { Link } from 'expo-router';
 import React, { useState } from 'react';
-import { View, TextInput, ImageBackground, Text, StyleSheet, Pressable, Alert } from 'react-native';
+import { View, TextInput, ImageBackground, Text, StyleSheet, Pressable, Alert, ScrollView } from 'react-native';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import {auth,db} from '../components/firebase/firebaseConfig'
 import { useNavigation } from '@react-navigation/native';
 import { doc, setDoc, Timestamp } from 'firebase/firestore';
+import { Modal } from 'react-native-web';
 
 
 
@@ -23,7 +24,8 @@ const SignUp = () => {
   const [monedas, setMonedas] = useState(200);
   const [exp, setExp] = useState(0);
   const [nivel,setNivel] = useState(1);
-  
+  const [racha, setRacha] = useState(0);
+  const [rachaMaxima, setRachaMaxima] = useState(0);
 
  const handlerOnChange = (field, value) => {
   setCredenciales((prevCredenciales) => ({
@@ -38,13 +40,16 @@ createUserWithEmailAndPassword(auth, credenciales.email, credenciales.password)
     const user = userCredential.user;
     try{
       setDoc(doc(db, "users", user.uid), {
-        name: credenciales.name,
-        email: credenciales.email,
-        Timestamp: Timestamp.now(),
-        vidas: vidas,
-        monedas: monedas,
-        exp: exp,
-        nivel: nivel
+        Name: credenciales.name,
+        Email: credenciales.email,
+        TiempoRegistrado: Timestamp.now(),
+        Vidas: vidas,
+        Monedas: monedas,
+        Exp: exp,
+        Nivel: nivel,
+        Racha: racha,
+        RachaMaxima: rachaMaxima,
+       // ModalRachaShow: Timestamp.now()
       });
     } catch (error) {
   
@@ -94,6 +99,13 @@ const handleFirebaseError = (error) => {
     case "auth/invalid-credential":
       errorMessage = "Las credenciales ingresadas no son válidas. Intenta nuevamente.";
       break;
+      case "auth/email-already-in-use":
+        errorMessage = "El correo electrónico ya está en uso. Por favor, utiliza otro correo electrónico.";
+        break;
+        case "auth/weak-password":
+          errorMessage = "La contraseña debe tener al menos 6 caracteres.";
+          break;
+          
     default:
       errorMessage = "Ha ocurrido un error inesperado. Por favor, inténtalo de nuevo más tarde.";
   }
@@ -103,7 +115,8 @@ const handleFirebaseError = (error) => {
 };
 
   return (
-    <View className="w-full h-full flex items-center justify-center p-10 absolute top-0 left-0 right-0 bottom-0 bg-black/60 gap-4" >
+    <ScrollView >
+    <View className="w-full h-screen flex items-center justify-center p-10 bg-black gap-4" >
       <View>
         <Text className='text-3xl font-bold color-white '>Bible Game</Text>
         <Text className='text-lg font-bold color-white'>Registrate para continuar</Text>
@@ -162,7 +175,7 @@ const handleFirebaseError = (error) => {
       </Text>
            
     </View>
-    
+    </ScrollView>
   );
 };
 

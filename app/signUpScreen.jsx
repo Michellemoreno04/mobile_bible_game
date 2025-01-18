@@ -2,44 +2,19 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
-import { onAuthStateChanged } from 'firebase/auth';
-import { auth } from '../components/firebase/firebaseConfig';
 import useAuth from './authContext';
 import LottieView from 'lottie-react-native' ;
-import * as Google from 'expo-auth-session/providers/google';
-import * as WebBrowser from 'expo-web-browser';
-import {GoogleAuthProvider, signInWithCredential } from 'firebase/auth';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import HomeScreen from '../app/(tabs)/index';
+
 
  export default function SignUpScreen() {
 
   const { user } = useAuth();
 
-  useEffect(() => {
-    if (user) {
-      navigation.navigate('(tabs)');
-    }
-  }, [user]);
-/*
-  const [userInfo, setUserInfo] = useState();
-  const [request, response, promptAsync] = Google.useAuthRequest({ 
-    androidClientId: '4928746886-v7b5nq4bic8hrgkvmer6hq2taojjjkku.apps.googleusercontent.com',
-  //  iosClientId: '',
-  });
-  */
+
+
 
   const navigation = useNavigation();
 
-  /*useEffect(() => {
-    if (response?.type === 'success') {
-      const { id_token } = response.params;
-      const credential = GoogleAuthProvider.credential(id_token);
-      signInWithCredential(auth, credential)
-        
-    }
-  }, [response]);
-*/
 
   const handleEmailSignUp = () => {
     navigation.navigate('login');
@@ -53,7 +28,7 @@ import HomeScreen from '../app/(tabs)/index';
   };
   
   return (
-    <View className='w-full h-full   flex items-center justify-center p-10 absolute top-0 left-0 right-0 bottom-0 bg-black/60'>
+    <View className='w-full h-full    flex items-center justify-center p-10 absolute top-0 left-0 right-0 bottom-0 bg-black/60'>
       <Text className="text-center text-3xl font-bold text-white">Bienvenido a "Estudio Bíblico Diario"</Text>
       <Text className="text-center text-lg pb-5  text-gray-100">
         Nuestra app está diseñada para ayudarte a estudiar la Biblia todos los días y fortalecer tu relación espiritual.

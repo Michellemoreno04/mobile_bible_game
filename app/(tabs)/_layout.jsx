@@ -4,22 +4,32 @@ import { useColorScheme } from '@/hooks/useColorScheme';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Text, Pressable } from 'react-native';
 
-import { auth } from '../../components/firebase/firebaseConfig';
-
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
 
 
   return (
-    <Tabs >
+    <Tabs
+      screenOptions={{ tabBarActiveTintColor: 'skyblue',
+      tabBarStyle: {
+        backgroundColor: '#ff7a01',
+        borderTopWidth: 0,
+       
+
+       
+      }
+       }}>
         
       <Tabs.Screen
         name="index"
+        
         options={{
           title: 'Home',
         headerShown: false,
-        tabBarIcon: ({ color }) => <MaterialCommunityIcons name="home" color={color} size={26} />,
+        tabBarIcon: ({ color }) => <MaterialCommunityIcons name="home" color={color} size={26}
+        
+        />,
 
         }}
       />

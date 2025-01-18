@@ -50,6 +50,7 @@ export default function RootLayout() {
   };
 
   return (
+    
     <PaperProvider theme={theme}>
     <AuthProvider>
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
@@ -57,26 +58,19 @@ export default function RootLayout() {
         screenOptions={{ headerShown: true }}
       
       >
-       
-       
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="index" options={{ headerShown: false }} />
+        <Stack.Screen name="(tabs)" options={{ headerShown: false,gestureEnabled: false }} />{/*gestureEnabled: false desactiva el deslizar*/}
+        {/*<Stack.Screen name="index" options={{ headerShown: false }} />*/}
+        <Stack.Screen name="app" options={{ headerShown: false }} />
         <Stack.Screen name="login" options={{ headerShown: true, headerTransparent: true,headerTitle: '',headerTintColor: '#fff'}} />
         <Stack.Screen name="signUp" options={{ headerShown: true, headerTransparent: true,headerTitle: '',headerTintColor: '#fff'}} />
-        <Stack.Screen name="bibleQuiz" options={{ headerShown: false }} />
+        <Stack.Screen name="bibleQuiz" options={{ headerShown: false,gestureEnabled: false }} /> 
         <Stack.Screen name="versiculosFavoritos" options={{ headerShown: true, headerTitle: 'Versículos Favoritos',headerBackTitle:'volver' }} />
-        {/*<Stack.Screen
-        name="puntuacion"
-        options={{
-          presentation: "card", 
-         
-        }}
-      />*/}
         <Stack.Screen name="+not-found" />
       </Stack>
       <StatusBar style="auto" />
     </ThemeProvider>
     </AuthProvider>
     </PaperProvider>
+   
   );
 }
