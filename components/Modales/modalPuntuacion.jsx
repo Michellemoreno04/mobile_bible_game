@@ -33,22 +33,22 @@ useEffect(() => {
            />             
           </View>
        <Text className='text-3xl font-bold' >Felicidades</Text>
-       <View className='w-full flex flex-row items-center justify-around ' >
-           <View className='flex flex-col items-center justify-center m-10' >
+       <View  style={styles.monedasContainer} >
+           <View  style={styles.itemsGanados}>
             <Text className='text-2xl  ' >
                +{monedasGanadas}
-            <FontAwesome5 name="coins" size={24} color="yellow"  />
+            <FontAwesome5 name="coins" size={24} color="black"  />
             </Text>
             <Text className='text-2xl'>Monedas</Text>
            </View>
 
-           <View className='w-40 flex flex-col items-center justify-center' >
+           <View className='flex flex-col items-center justify-center ' >
             <Text className='text-2xl ' >
            +{expGanada}
-           <FontAwesome6 name="award" size={24} color="yellow" />
+           <FontAwesome6 name="award" size={24} color="black" />
             </Text>
             <Text className='text-2xl'>Exp</Text>
-           </View>
+         </View>
             
        </View>
 
@@ -88,5 +88,20 @@ onPress={onClose}
     backgroundColor: 'yellow',
     },
     
-        
+    monedasContainer:{
+      width: '100%',
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent: 'center',
+      justifyContent: 'space-around',
+      padding: 10,
+
+    },
+    itemsGanados: {
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: 10,
+    }
     });

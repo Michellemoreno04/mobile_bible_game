@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, ActivityIndicator, TouchableOpacity, Modal, StyleSheet, Share } from 'react-native';
+import { View, Text, FlatList, ActivityIndicator, TouchableOpacity, Modal, StyleSheet, Share, SafeAreaView,ImageBackground } from 'react-native';
 import { getFirestore, collection, query, limit, startAfter, getDocs, doc, deleteDoc, orderBy } from 'firebase/firestore';
 import useAuth from '../app/authContext';
 import { Entypo } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { LinearGradient } from 'expo-linear-gradient';
 
 
 export default function VersiculosFavoritos() {
@@ -99,6 +98,8 @@ export default function VersiculosFavoritos() {
     return `${dia}/${mes}/${anio}`;
   };
 
+ 
+
   if(!versiculos){
     return(
     <>
@@ -135,11 +136,10 @@ export default function VersiculosFavoritos() {
   };
 
   return (
-      <LinearGradient
-           colors={['#ffcc00','#ff8a00']}
-           style={styles.backgroundColor}
-         >
-    <View style={styles.container}>
+    <SafeAreaView>
+      <ImageBackground source={require('../assets/images/bg-cohete.png')} resizeMode='cover' style={styles.background}>
+    <View style={styles.container} >
+      <Text className="text-3xl font-bold text-white text-center p-5">Versículos Favoritos</Text>
       {loading && <ActivityIndicator size="large" color="#0000ff" />}
       <FlatList
         data={versiculos}
@@ -152,7 +152,7 @@ export default function VersiculosFavoritos() {
         }
       />
      
-
+     
       {/* Modal del menú */}
       {menuVisible && (
         <Modal transparent animationType="fade" visible={!!menuVisible} onRequestClose={() => setMenuVisible(null)}>
@@ -181,13 +181,15 @@ export default function VersiculosFavoritos() {
         </Modal>
       )}
     </View>
-    </LinearGradient>
+    </ImageBackground>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    width: '100%',
+    height: '100%',
     padding: 15,
     
   },
@@ -250,8 +252,6 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     
-    
-    
-    //backgroundColor: '#ff8a00',
+
   },
 });

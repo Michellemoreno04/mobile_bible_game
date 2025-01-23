@@ -16,11 +16,3 @@
 
 
 # Done
-1. versiculos diarios 
-2. versiculos favoritos
-3. error de log out corregido
-4. añadi sonidos para modales y el quiz
-5. musica de fondo para el quiz
-6. sistema de Racha diaria 
-7. tambier compartir los versiculos guardados
-8. Texto Diario

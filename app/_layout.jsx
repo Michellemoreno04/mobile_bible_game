@@ -63,8 +63,9 @@ export default function RootLayout() {
         <Stack.Screen name="app" options={{ headerShown: false }} />
         <Stack.Screen name="login" options={{ headerShown: true, headerTransparent: true,headerTitle: '',headerTintColor: '#fff'}} />
         <Stack.Screen name="signUp" options={{ headerShown: true, headerTransparent: true,headerTitle: '',headerTintColor: '#fff'}} />
+        <Stack.Screen name="signUpScreen" options={{ headerShown: false, headerTransparent: true,headerTitle: '',headerTintColor: '#fff'}} />
         <Stack.Screen name="bibleQuiz" options={{ headerShown: false,gestureEnabled: false }} /> 
-        <Stack.Screen name="versiculosFavoritos" options={{ headerShown: true, headerTitle: 'Versículos Favoritos',headerBackTitle:'volver' }} />
+        <Stack.Screen name="versiculosFavoritos" options={{ headerShown: true, headerTitle: '',headerBackTitle:'back' }} />
         <Stack.Screen name="+not-found" />
       </Stack>
       <StatusBar style="auto" />

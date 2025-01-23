@@ -18,7 +18,7 @@ export const AuthProvider = ({ children }) => {
                 console.log('User signed in:', user.email);
             } else {
                 console.log('User signed out');
-                navigation.navigate("login");
+                navigation.navigate("signUpScreen");
             }
         })
 
@@ -33,7 +33,7 @@ export const AuthProvider = ({ children }) => {
          await auth.signOut();
          console.log('User signed out');
          
-         navigation.navigate("login"); 
+         navigation.navigate("signUpScreen"); 
         
     };
 

@@ -7,6 +7,7 @@ import {
   ActivityIndicator,
   Alert,
   Share,
+  ImageBackground,
 } from "react-native";
 import { Feather, AntDesign } from "@expo/vector-icons";
 import { db } from "../../components/firebase/firebaseConfig";
@@ -24,9 +25,14 @@ import {
 import useAuth from "@/app/authContext";
 import * as Clipboard from "expo-clipboard";
 import { useNavigation } from "@react-navigation/native";
+import { Dimensions } from "react-native";
 
+
+
+const width = Dimensions.get("screen").width;
 const VersiculosDiarios = () => {
   const { user } = useAuth();
+  
   const navigation = useNavigation();
   const [versiculo, setVersiculo] = useState(null);
   const [versiculoGuardado, setVersiculoGuardado] = useState(false);
@@ -174,13 +180,23 @@ const VersiculosDiarios = () => {
  
 
   return (
-    <View style={styles.verseContainer}>
-      <Text style={styles.referencia}>{versiculo?.texto}</Text>
-      <View style={styles.cita}>
-        <Text className="text-white" >{versiculo?.versiculo}</Text>
-      </View>
+      <ImageBackground source={require("../../assets/images/pizarra.png")} resizeMode="stretch"  style={styles.background}>
+    
+      
+      
+      <View style={styles.card}>
+      
+      
+        <Text className="text-white text-end" >{versiculo?.versiculo}</Text>
+      
+      <Text style={styles.referencia} numberOfLines={6} ellipsizeMode="tail" adjustsFontSizeToFit  > {versiculo?.texto}</Text> 
+        </View>  
+      
 
+<View style={styles.divisor}/>
+      
       <View style={styles.actionsContainer}>
+       
         <Pressable style={styles.actionButton} onPress={copiar}>
           <Feather name="copy" size={24} color="white" />
           <Text className="text-white">Copiar</Text>
@@ -198,39 +214,56 @@ const VersiculosDiarios = () => {
           <Text className="text-white">Favorito</Text>
         </Pressable>
       </View>
-    </View>
+
+    </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
-  verseContainer: { 
-    width: "100%",
-    height: 250,
-    
-    borderRadius: 20,
-    padding: 16,
-    //backgroundColor: "skyblue",
-   // boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.5)",
-    justifyContent:'space-around', // Ajusta el espacio entre los elementos
+
+  background:{
+  maxHeight: 350,
+  padding: 35,
+  paddingBottom: 50,
+  //backgroundColor: "white",   
+
   },
-  referencia: { 
-    fontSize: 24,
-   fontWeight: "bold",
-  color: "white",
-  fontFamily: "serif",
+ card: {
+    flexDirection: "column",
+    width: "100%",
+    justifyContent: "space-between",
+    
+  
+ },
+ 
+  referencia: {
+    fontSize: 26,
+    fontWeight: "bold",
+    color: "white",
+    fontFamily: "arial",
+    flexWrap: "nowrap",
   },
   cita: {
+  
     width: "100%",
     fontSize: 16,
     flexDirection: "row",
     justifyContent: "flex-end",
   },
+  divisor: {
+    width: "100%",
+    height: 0.5,
+    backgroundColor: "white",
+    marginTop: 16,
+  },
   actionsContainer: {
     width: "100%",
+    height: 'auto',
     flexDirection: "row",
     justifyContent: "flex-start",
+    alignItems: "flex-end",
     gap: 16,
-    marginTop: 16,
+    marginTop: 5,
     
 
   },

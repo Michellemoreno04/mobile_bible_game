@@ -4,6 +4,7 @@ import { FontAwesome } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import useAuth from './authContext';
 import LottieView from 'lottie-react-native' ;
+import { LinearGradient } from 'expo-linear-gradient';
 
 
  export default function SignUpScreen() {
@@ -28,8 +29,10 @@ import LottieView from 'lottie-react-native' ;
   };
   
   return (
-    <View className='w-full h-full    flex items-center justify-center p-10 absolute top-0 left-0 right-0 bottom-0 bg-black/60'>
-      <Text className="text-center text-3xl font-bold text-white">Bienvenido a "Estudio Bíblico Diario"</Text>
+            <LinearGradient colors={['#ffcc00', '#ff8a00']} style={{ flex: 1 }}>
+    
+    <View className='w-full h-full    flex items-center justify-center p-5 '>
+      <Text className="text-center text-3xl font-bold text-white">Bienvenido a "BibleBrain"</Text>
       <Text className="text-center text-lg pb-5  text-gray-100">
         Nuestra app está diseñada para ayudarte a estudiar la Biblia todos los días y fortalecer tu relación espiritual.
       </Text>
@@ -54,6 +57,8 @@ import LottieView from 'lottie-react-native' ;
         <Text style={styles.buttonText}>Registrarse con Google</Text>
       </TouchableOpacity>
     </View>
+
+    </LinearGradient>
   );
 }
 

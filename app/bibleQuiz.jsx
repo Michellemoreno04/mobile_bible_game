@@ -233,7 +233,7 @@ if (preguntas.length === 0) {
       }
     } else {
       Alert.alert('Has completado el quiz.');
-      manejarRachaDiaria(user.uid);
+      //manejarRachaDiaria(user.uid);
       setShowModal(true); // Muestra el modal
     }
   };
@@ -337,13 +337,14 @@ useEffect(() => {
     <SafeAreaView>
  <ModalPuntuacion expGanada={expGanada} monedasGanadas={monedasGanadas} respuestasCorrectas={resultadoRespuestas} isVisible={showModal} onClose={mostrarModalRacha}/>  
 <ModalRacha userInfo={userInfo} isVisible={showModalRacha} setShowModalRacha={setShowModalRacha}  />
-
-    <View  className='w-full h-full bg-[#ff8000] flex items-center p-5'>
+<ImageBackground source={require('../assets/images/bg-cohete.png')} 
+     resizeMode="cover" style={styles.backgroundImage}>
+    <View  className='w-full h-full  flex items-center '>
    
       <View className='w-full flex flex-row justify-between items-center '>
       
         <TouchableOpacity onPress={salir} >
-        <MaterialCommunityIcons name="home" color="blue" size={40}/>
+        <MaterialCommunityIcons name="home" color="blue" size={40} className=' w-10 h-10 ml-5'/>
         </TouchableOpacity>
         
         <View style={styles.statusBar}>
@@ -353,8 +354,8 @@ useEffect(() => {
         <Text style={styles.status}>{userInfo.Monedas}</Text>
         </View>
       </View>
-     
-     <View style={styles.questionContainer} className='w-full h-[90%] rounded-md bg-[#ffcc00] flex items-center p-5 '>
+    
+     <View className='w-full h-[90%] rounded-md  flex items-center p-5 '>
      
        <View className='w-full flex flex-row justify-end '>
        <TouchableOpacity onPress={toggleMute} style={styles.iconButton}>
@@ -367,7 +368,7 @@ useEffect(() => {
        </View>
 
   
-    <View style={styles.questionContainer} className="w-full h-52 bg-[#ff8a00] rounded-md mb-5 mt-5 flex items-center justify-center p-2">
+    <View style={styles.questionContainer} className="w-full h-52  rounded-md mb-5 mt-5 flex items-center justify-center p-2">
       <Text 
         className="text-white rounded-md p-3 absolute top-0 left-0 "
         onPress={showTextoBiblico}
@@ -386,10 +387,10 @@ useEffect(() => {
     style={styles.respuestas}
     className={`w-full h-16 rounded-md flex items-center  justify-center m-1  ${
       respuestaSeleccionada === respuesta
-        ? 'border-2 border-green-500'
+        ? 'border-4 border-green-500'
         : mostrarRespuestaCorrecta && respuesta === correcta
         ? 'border-2 border-green-500'
-        : 'border-2 border-[#ff8a00]'
+        : 'border-2 border-gray-400'
     } ${
       mostrarRespuestaCorrecta && respuesta !== correcta
         ? 'border-2 border-red-500'
@@ -406,23 +407,24 @@ useEffect(() => {
       </View>
 
       <TouchableOpacity
-       className='w-56 h-16 border-2 border-gray-500 bg-blue-500 rounded-md flex items-center justify-center flex-row gap-2 m-5'
+      style={styles.comprobar}
+       className='w-full h-16  bg-blue-500 rounded-md flex items-center justify-center flex-row gap-2 m-5'
        onPress={comprobarRespuesta}
        >
         
-        <Text className='text-2xl font-bold text-white'>Comprabar</Text>
+        <Text className='text-2xl font-bold text-white'>Comprobar</Text>
         <AntDesign name="rightcircleo" size={24} color="white" />
       </TouchableOpacity>
 
-      <View className='w-full flex flex-row justify-around'>
+      <View className='w-full flex flex-row items-center justify-center gap-2'>
         <TouchableOpacity
         onPress={skip}
-        className='w-48 h-20  bg-red-500 rounded-md flex items-center justify-center ' >
+        className='w-56 h-20  bg-red-500 rounded-md flex items-center justify-center ' >
           <Text className='color-white'>💰{'50'}</Text>
           <Text className='color-white font-bold'>Saltar</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          className='w-48 h-20  bg-blue-500 rounded-md flex items-center justify-center'
+          className='w-56 h-20  bg-red-500 rounded-md flex items-center justify-center'
          onPress={removeTwo}
          disabled={respuestas.length <= 2} // Deshabilita el botón si hay 2 o menos respuestas
         >
@@ -431,9 +433,9 @@ useEffect(() => {
         </TouchableOpacity>
       </View>
       
-
       </View>
     </View>
+</ImageBackground>
     </SafeAreaView>
     
   );
@@ -442,24 +444,38 @@ useEffect(() => {
 const styles = StyleSheet.create({
 
  questionContainer: {
-    
+    boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.7)',
     borderRadius: 20,
+    padding: 10,
+    
   },
   respuestas: {
-backgroundColor: '#ff8a00',
-    borderRadius: 50,
+   // boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.7)',
+   backgroundColor: 'skyblue',
+  borderRadius: 50,
+  },
+  comprobar: {
+ 
+  borderRadius: 50,
   },
  
   
   statusBar: {
+    
     flexDirection: 'row',
     alignItems: 'center',
+    
   },
   status: {
     marginHorizontal: 10,
     fontSize: 18,
   },
- 
+  backgroundImage: {
+    width: '100%',
+    resizeMode: 'cover',
+    borderRadius: 20,
+    overflow: 'hidden',
+  },
   
 
  

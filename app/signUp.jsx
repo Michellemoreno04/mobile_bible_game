@@ -1,12 +1,13 @@
 import { Link } from 'expo-router';
 import React, { useState } from 'react';
-import { View, TextInput, ImageBackground, Text, StyleSheet, Pressable, Alert, ScrollView } from 'react-native';
+import { View, TextInput, KeyboardAvoidingView, Text, StyleSheet, Pressable, Alert, ScrollView } from 'react-native';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import {auth,db} from '../components/firebase/firebaseConfig'
 import { useNavigation } from '@react-navigation/native';
 import { doc, setDoc, Timestamp } from 'firebase/firestore';
-import { Modal } from 'react-native-web';
+import { LinearGradient } from 'expo-linear-gradient';
+
 
 
 
@@ -115,40 +116,42 @@ const handleFirebaseError = (error) => {
 };
 
   return (
-    <ScrollView >
-    <View className="w-full h-screen flex items-center justify-center p-10 bg-black gap-4" >
+            <LinearGradient colors={['#ffcc00', '#ff8a00']} style={{ flex: 1 }}>
+    <KeyboardAvoidingView >
+    <ScrollView  >
+    <View className="w-full h-screen flex items-center justify-center p-8 gap-4" >
       <View>
-        <Text className='text-3xl font-bold color-white '>Bible Game</Text>
+        <Text className='text-3xl font-bold color-white text-center '>BibleBrain</Text>
         <Text className='text-lg font-bold color-white'>Registrate para continuar</Text>
       </View>
       <TextInput
-        className='w-full h-14 border border-gray-300 rounded-md p-2 text-white'
+        className='w-full h-16 border-2 border-white rounded-md p-2 text-white font-bold'
         placeholder="Nombre"
-        placeholderTextColor="#ccc"
+        placeholderTextColor="#fff"
         value={credenciales.name}
         onChangeText={(text) => handlerOnChange('name', text)}
         keyboardType="default"
       />
       <TextInput
-        className='w-full h-14 border border-gray-300 rounded-md p-2 text-white'
+        className='w-full h-16 border-2 border-white rounded-md p-2 text-white font-bold'
         placeholder="correo electronico"
-        placeholderTextColor="#ccc"
+        placeholderTextColor="#fff"
         value={credenciales.email}
         onChangeText={(text) => handlerOnChange('email', text)}
         keyboardType="email-address"
       />
       <TextInput
-        className='w-full h-14 border border-gray-300 rounded-md p-2 text-white'
+        className='w-full h-16 border-2 border-white rounded-md p-2 text-white font-bold'
         placeholder="contraseña"
-        placeholderTextColor="#ccc"
+        placeholderTextColor="#fff"
         value={credenciales.password}
         onChangeText={(text) => handlerOnChange('password', text)}
         secureTextEntry
       />
       <TextInput
-      className='w-full h-14 border border-gray-300 rounded-md p-2 text-white'
+      className='w-full h-16 border-2 border-white rounded-md p-2 text-white font-bold'
         placeholder="Confirmar contraseña"
-        placeholderTextColor={'#ccc'}
+        placeholderTextColor='#fff'
         value={credenciales.confirmPassword}
         onChangeText={(text) => handlerOnChange('confirmPassword', text)}
         secureTextEntry
@@ -156,11 +159,11 @@ const handleFirebaseError = (error) => {
       {error ? <Text >{error}</Text> : null}
       <Pressable
       onPress={handleSignUp}
-      className='w-full h-14 flex items-center justify-center border-gray-300 rounded-md bg-blue-500 p-2 mt-3'>
+      className='w-full h-16 flex items-center justify-center  rounded-md bg-blue-500 p-2 mt-3'>
         <Text className='color-white'>Registrate</Text>
       </Pressable>
 
-      <Pressable className='w-full h-14 flex flex-row items-center border border-gray-300 rounded-md p-2 justify-center gap-2'>
+      <Pressable className='w-full h-16 flex flex-row items-center border-2 border-white rounded-md p-2 justify-center gap-2'>
                 <AntDesign name="google" size={24} color="#fff" />
               <Text className='color-white'>Cuenta de Google</Text>
             </Pressable>
@@ -168,14 +171,16 @@ const handleFirebaseError = (error) => {
       <Text className='color-white' >
         Ya tienes una cuenta?{' '}
         <Link href="/login">
-        <Text className='text-blue-500' >
-          inicia seccion
+        <Text className='text-blue-500 font-bold' >
+          iniciar seccion
         </Text> 
         </Link>
       </Text>
            
     </View>
     </ScrollView>
+    </KeyboardAvoidingView>
+    </LinearGradient>
   );
 };
 

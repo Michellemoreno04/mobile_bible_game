@@ -1,4 +1,4 @@
-import { View, Text, ScrollView,Pressable,Alert} from 'react-native';
+import { View, Text, ScrollView,Pressable,Alert, ImageBackground} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Entypo } from '@expo/vector-icons';
 import React,{useEffect, useState} from 'react';
@@ -55,7 +55,7 @@ const salir = () => {
   return (
     
     (
-        <LinearGradient colors={['#ffcc00', '#ff8a00']} style={{ flex: 1 }}>
+        <ImageBackground source={require('../../assets/images/bg-cohete.png')} style={{flex:1}}>
       <ScrollView>
           <SafeAreaView>
             
@@ -66,7 +66,7 @@ const salir = () => {
             </View>
   
             {/* Blue Card */}
-            <View className="w-[90%]  bg-[#ff8a00] rounded-md items-center self-center p-5 pb-5 mt-5">
+            <View className="w-[90%]  bg-sky-500 rounded-md items-center self-center p-5 pb-5 mt-5">
               <Avatar.Image size={100} source={require('../../assets/images/icon.png')} />
               <Text className="text-3xl font-bold text-white mt-3">{userInfo?.Name}</Text>
               <View className="w-full flex flex-row justify-between mt-5">
@@ -100,7 +100,7 @@ const salir = () => {
            
           </SafeAreaView>
       </ScrollView>
-        </LinearGradient>
+        </ImageBackground>
     )
   );
 }
