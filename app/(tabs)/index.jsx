@@ -10,7 +10,6 @@ import { Avatar } from 'react-native-paper';
 import { niveles } from '@/components/Niveles/niveles';
 import VersiculosDiarios from '@/components/VersiculoDiario/versiculoDiario';
 import NivelModal from '@/components/Modales/modalNivel';
-import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from 'expo-router';
 import LottieView from 'lottie-react-native';
 
