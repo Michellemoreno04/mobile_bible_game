@@ -42,7 +42,7 @@ export default function SignUpScreen() {
     // await promptAsyncGoogle();
     await GoogleSignin.signIn()
       .then((response) => {
-        console.log(response);
+        console.log(response, "RESPONSEE");
       })
       .catch((error) => console.log(error));
   };

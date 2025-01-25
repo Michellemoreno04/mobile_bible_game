@@ -11,7 +11,16 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.biblegame.mobile",
-      "googleServicesFile": "./GoogleService-Info.plist"
+      "googleServicesFile": "./GoogleService-Info.plist",
+      "infoPlist": {
+        "CFBundleURLTypes": [
+          {
+            "CFBundleURLSchemes": [
+              "com.googleusercontent.apps.4928746886-32ikg1kol2clnimjjmk1ek1eat2n385f"
+            ]
+          }
+        ]
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -40,8 +49,14 @@
           "backgroundColor": "#ffffff"
         }
       ],
-      "expo-build-properties"
-      
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "useFrameworks": "static"
+          }
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
