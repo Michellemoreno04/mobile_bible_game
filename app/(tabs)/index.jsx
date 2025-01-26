@@ -1,7 +1,7 @@
-import { Text, View, StyleSheet, SafeAreaView, ScrollView, Alert, ImageBackground, Image,TouchableWithoutFeedback, Modal,RefreshControl } from 'react-native';
+import { Text, View, StyleSheet, SafeAreaView, ScrollView, Alert, Image,TouchableWithoutFeedback, Modal } from 'react-native';
 import '../../global.css';
 import { Link } from 'expo-router';
-import { AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import useAuth from '../authContext';
 import React, { useEffect, useState,useRef } from 'react';
 import { doc, onSnapshot, updateDoc } from 'firebase/firestore';
@@ -82,39 +82,52 @@ export default function AppComponent() {
 
   return (
       <SafeAreaView>
-        <ImageBackground source={require('../../assets/images/bg-cohete.png')} style={styles.imageBackground}>
-        <View style={styles.screen}>
         <ScrollView >
+        <View style={styles.screen} className='bg-gray-100'>
           <NivelModal
             userInfo={userAuthenticated?.Nivel}
             isVisible={showNivelModal}
             onClose={() => setShowNivelModal(false)}
           />
           
-            <View className="w-full flex justify-start items-center flex-row gap-3 pb-3">
-              <Avatar.Image size={50} source={require('../../assets/images/Loader.png')} />
-              <View>
-                <Text className="text-2xl font-bold">{userAuthenticated?.Name || 'Anonimo'}</Text>
-                <Text className="flex text-center bg-gray-300 rounded-full p-1 text-gray-500">
-                  {`Nivel ${niveles(userAuthenticated?.Exp || 0).nivel} ${niveles(userAuthenticated?.Exp || 0).insignia}`}
-                </Text>
-              </View>
-            </View>
+          <View style={styles.headerContainer}>
+  {/* Contenedor Izquierdo: Avatar e Información */}
+  <View style={styles.leftContainer}>
+    <Avatar.Image size={50} source={require('../../assets/images/Loader.png')} />
+    <View style={styles.userInfo}>
+      <Text style={styles.greeting}>
+        {`Hola!, ${userAuthenticated?.Name || 'Anónimo'}`}
+      </Text>
+      <Text style={styles.level}>
+        {`Nivel ${niveles(userAuthenticated?.Exp || 0).nivel} -> ${niveles(userAuthenticated?.Exp || 0).insignia}`}
+      </Text>
+    </View>
+  </View>
+
+  {/* Contenedor Derecho: Racha */}
+  <View style={styles.rachaContainer}>
+    <Text style={styles.rachaText}>{userAuthenticated?.Racha || 0}</Text>
+    <MaterialCommunityIcons name="lightning-bolt-outline" size={26} color="black" />
+  </View>
+</View>
+
 
             <VersiculosDiarios />
 
             <View className="w-full flex justify-start mb-5 mt-5">
-              <Text className="text-3xl font-bold text-white">Explora</Text>
+              <Text className="text-3xl font-bold">Explora</Text>
             </View>
             <View style={styles.estudiaContainer}>
               <View  style={styles.estudia} >
               <TouchableWithoutFeedback onPress={handleAnimationPress}>
                 
                   <View className="flex justify-center items-center">
+                  <View className="w-24 h-24 flex justify-center items-center rounded-full bg-blue-100">
                   <LottieView source={require('../../assets/lottieFiles/cerebro.json')}  autoPlay loop={false}
-                    style={{width: 200, height: 100} } resizeMode='cover' ref={animationRef} onAnimationFinish={animationRef.current?.pause} />
+                    style={{width: 100, height: 100} } resizeMode='cover' ref={animationRef} onAnimationFinish={animationRef.current?.pause} />
 
-                    <Text className="text-center font-bold text-2xl text-white">Refuerza Conocimientos</Text>
+                  </View>
+                    <Text className="text-center font-bold text-2xl text-blue-400">Refuerza Conocimientos</Text>
                   </View>
                 
               </TouchableWithoutFeedback>
@@ -141,17 +154,18 @@ export default function AppComponent() {
               <View style={styles.estudia}>
                 <Link href="/versiculosFavoritos">
                   <View className="flex justify-center items-center">
-                    <Image source={require('../../assets/images/book3d.png')} style={{width: 100, height: 100,flex: 1} } resizeMode='cover'>
+                  <View className="w-24 h-24 flex justify-center items-center rounded-full bg-blue-100">
+                    <Image source={require('../../assets/images/book3d.png')} style={{width: 60, height: 60} } resizeMode='contain' />
 
-                    </Image>
-                    <Text className="text-center font-bold text-2xl text-white">Versículos favoritos</Text>
+                   
+                  </View>
+                    <Text className="text-center font-bold text-2xl text-blue-400">Versículos favoritos</Text>
                   </View>
                 </Link>
               </View>
             </View>
-        </ScrollView>
           </View>
-        </ImageBackground>
+        </ScrollView>
       </SafeAreaView>
     
   );
@@ -161,10 +175,45 @@ export default function AppComponent() {
 
 const styles = StyleSheet.create({
   screen: {
-    width: '100%',
     height: '100%',
     padding: 10,
-   // backgroundColor: '#1f2937',
+    
+  },
+  headerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between', // Separar elementos a los extremos
+    alignItems: 'center',
+    paddingHorizontal: 10,
+    marginBottom: 20,
+  },
+  leftContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  userInfo: {
+    marginLeft: 10,
+  },
+  greeting: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  level: {
+    fontSize: 14,
+    color: '#555',
+  },
+  rachaContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#f0f0f0', // Fondo claro
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 20,
+    elevation: 2, // Sombra sutil
+  },
+  rachaText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginRight: 5, // Separación entre texto e ícono
   },
   estudiaContainer: {
     borderRadius: 10,
@@ -179,8 +228,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'skyblue',
-   //boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.7)',
+    backgroundColor: 'white',
     margin: 10,
   },
   modalContainer: {

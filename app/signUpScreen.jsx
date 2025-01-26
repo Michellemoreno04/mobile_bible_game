@@ -5,12 +5,12 @@ import { useNavigation } from "@react-navigation/native";
 import useAuth from "./authContext";
 import LottieView from "lottie-react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { GoogleSignin } from "@react-native-google-signin/google-signin";
-import { useIdTokenAuthRequest as useGoogleIdTokenAuthRequest } from "expo-auth-session/providers/google";
+//import { GoogleSignin } from "@react-native-google-signin/google-signin";
+//import { useIdTokenAuthRequest as useGoogleIdTokenAuthRequest } from "expo-auth-session/providers/google";
 
 export default function SignUpScreen() {
   const { user } = useAuth();
-  useEffect(() => {
+ /* useEffect(() => {
     GoogleSignin.configure({
       // client ID that is on google-services.json / GoogleService-Info.plist
       webClientId:
@@ -20,7 +20,7 @@ export default function SignUpScreen() {
         "4928746886-32ikg1kol2clnimjjmk1ek1eat2n385f.apps.googleusercontent.com",
       scopes: ["https://www.googleapis.com/auth/userinfo.profile"],
     });
-  }, []);
+  }, []);*/
 
   // const [, googleResponse, promptAsyncGoogle] = useGoogleIdTokenAuthRequest({
   //   // selectAccount: true,
@@ -38,14 +38,14 @@ export default function SignUpScreen() {
     console.log("Sign up with Facebook");
   };
 
-  const handleGoogleLogin = async () => {
+ /* const handleGoogleLogin = async () => {
     // await promptAsyncGoogle();
     await GoogleSignin.signIn()
       .then((response) => {
         console.log(response, "RESPONSEE");
       })
       .catch((error) => console.log(error));
-  };
+  };*/
 
   return (
     <LinearGradient colors={["#ffcc00", "#ff8a00"]} style={{ flex: 1 }}>
@@ -66,7 +66,7 @@ export default function SignUpScreen() {
           />
         </View>
 
-        <TouchableOpacity style={styles.button} onPress={handleEmailSignUp}>
+        <TouchableOpacity style={styles.button} onPress={handleEmailSignUp} >
           <FontAwesome
             name="envelope"
             size={24}
@@ -91,7 +91,7 @@ export default function SignUpScreen() {
 
         <TouchableOpacity
           style={[styles.button, styles.googleButton]}
-          onPress={handleGoogleLogin}
+          //onPress={handleGoogleLogin}
         >
           <FontAwesome
             name="google"

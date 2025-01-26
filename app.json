@@ -49,6 +49,7 @@
           "backgroundColor": "#ffffff"
         }
       ],
+<<<<<<< HEAD
       [
         "expo-build-properties",
         {
@@ -57,6 +58,9 @@
           }
         }
       ]
+=======
+      "expo-build-properties"
+>>>>>>> 0f9dace
     ],
     "experiments": {
       "typedRoutes": true
@@ -66,8 +70,9 @@
         "origin": false
       },
       "eas": {
-        "projectId": "f395b9a4-4d99-4495-9991-005b1d0850d1"
+        "projectId": "ecab1bba-d027-4712-a36e-acbd35ca9d4f"
       }
-    }
+    },
+    "owner": "michellemoreno"
   }
 }
